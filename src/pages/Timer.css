@@ -1,0 +1,12 @@
+.timer-container {
+  text-align: center;
+  font-size: 2rem;
+  color: #333;
+  font-weight: bold;
+}
+
+.time {
+  font-size: 3rem;
+  color: #ff4444;
+  margin-top: 10px;
+}
