@@ -1,20 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Game.css";
 import Map from "./Map";
 import Timer from "./Timer";
 
 function Game() {
-  return (
-    <div className="container">
-      <div className="mapillary">mapillary</div>
-      <div className="timer">
-        <Timer />
-      </div>
-      <div className="leaflet">
-        <Map />
-      </div>
-    </div>
-  );
+    const [guessCoords, setGuessCoords] = useState(null);
+    const [actualCoords, setActualCoords] = useState(null);
+    useState(() => {
+        const randomLocation = {
+            lat: 123,
+            lng: 457,
+        };
+        setActualCoords(randomLocation);
+    }, []);
+
+
+
+    return ( <
+        div className = "container" >
+        <
+        div className = "mapillary" > mapillary < /div>  <
+        div className = "timer" >
+        <
+        Timer guessCoords = { guessCoords }
+        /> < /
+        div > <
+        div className = "leaflet" >
+        <
+        Map onGuess = { setGuessCoords }
+        /> < /
+        div > <
+        /div>
+    );
 }
 
 export default Game;
