@@ -2,16 +2,25 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Timer.css";
 
-function Timer({ guessCoords }={}) {
+function Timer({ guessCoords } = {}) {
   const [seconds, setSeconds] = useState(10);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (seconds === 0) {
-      // Navigate to Score page and pass coordinates using state
+    // Immediately navigate if coordinates are selected
+    if (guessCoords) {
       navigate("/Score", {
         state: {
           guessCoords,
+        }
+      });
+      return;
+    }
+
+    if (seconds === 0) {
+      navigate("/Score", {
+        state: {
+          guessCoords: null, // No coordinates selected
         }
       });
       return;

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-function Map({ onGuess }={}) {
+function Map({ onGuess } = {}) {
   useEffect(() => {
     const map = L.map("map").setView([0, 80], 3);
 
