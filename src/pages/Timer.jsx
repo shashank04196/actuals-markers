@@ -2,13 +2,27 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Timer.css";
 
-function Timer() {
-  const [seconds, setSeconds] = useState(60);
+function Timer({ guessCoords } = {}) {
+  const [seconds, setSeconds] = useState(10);
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Immediately navigate if coordinates are selected
+    if (guessCoords) {
+      navigate("/Score", {
+        state: {
+          guessCoords,
+        }
+      });
+      return;
+    }
+
     if (seconds === 0) {
-      navigate("/Score");
+      navigate("/Score", {
+        state: {
+          guessCoords: null, // No coordinates selected
+        }
+      });
       return;
     }
 
@@ -17,7 +31,7 @@ function Timer() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [seconds, navigate]);
+  }, [seconds, navigate, guessCoords]);
 
   const formatTime = (s) => {
     const mins = Math.floor(s / 60);

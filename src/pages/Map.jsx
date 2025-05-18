@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-function Map() {
+function Map({ onGuess } = {}) {
   useEffect(() => {
-    const map = L.map("map").setView([51.505, -0.09], 13);
+    const map = L.map("map").setView([0, 80], 3);
 
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
@@ -25,6 +25,8 @@ function Map() {
         .addTo(map)
         .bindPopup(`Lat: ${lat.toFixed(5)}, Lng: ${lng.toFixed(5)}`)
         .openPopup();
+      
+      onGuess({ lat, lng });
 
       console.log("Selected coordinate:", { lat, lng });
     });
@@ -33,7 +35,7 @@ function Map() {
     return () => {
       map.remove();
     };
-  }, []);
+  }, [onGuess]);
 
   return <div id="map" style={{ height: "100%", width: "100%" }}></div>;
 }
