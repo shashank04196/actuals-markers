@@ -7,27 +7,28 @@ function Timer({ guessCoords } = {}) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    //XXX: for debug puposes only
     // Immediately navigate if coordinates are selected
-    if (guessCoords) {
-      navigate("/Score", {
-        state: {
-          guessCoords,
-        }
-      });
-      return;
-    }
+    // if (guessCoords) {
+    //   navigate("/Score", {
+    //     state: {
+    //       guessCoords,
+    //     }
+    //   });
+    //   return;
+    // }
 
     if (seconds === 0) {
       navigate("/Score", {
         state: {
-          guessCoords: null, // No coordinates selected
-        }
+          guessCoords, // No coordinates selected
+        },
       });
       return;
     }
 
     const timer = setInterval(() => {
-      setSeconds(prev => prev - 1);
+      setSeconds((prev) => prev - 1);
     }, 1000);
 
     return () => clearInterval(timer);
