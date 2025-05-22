@@ -12,7 +12,8 @@ const View = () => {
 
 
     const containerRef = useRef(null);
-    const accessToken = "yMLY | 24042449852006793 | 41 fe7cda19d102ad08dcac22d1fb2ef6 ";
+    const accessToken =
+        import.meta.env.VITE_MAPILLARY_TOKEN;
 
     useEffect(() => {
         if (!containerRef.current) return;
