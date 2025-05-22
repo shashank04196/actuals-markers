@@ -2,67 +2,79 @@ import { useEffect, useRef } from "react";
 import { Viewer } from "mapillary-js";
 
 const View = () => {
-  /* TODO:create a .env file in the root project directory
-   add the name of the file in the .gitignore (as soon the save the gitignore file after adding name the filename in the file panel becomes dim)
-   add the key as VITE_MAPPILLARY_TOKEN = "access_token" (client_token) in mappillary user profile
-   */
-  const containerRef = useRef(null);
-  const accessToken = import.meta.env.VITE_MAPILLARY_TOKEN;
+    /* TODO:create a .env file in the root project directory
+     add the name of the file in the .gitignore (as soon the save the gitignore file after adding name the filename in the file panel becomes dim)
+     add the key as VITE_MAPPILLARY_TOKEN = "access_token" (client_token) in mappillary user profile
+     */
 
-  useEffect(() => {
-    if (!containerRef.current) return;
 
-    const viewer = new Viewer({
-      accessToken,
-      container: containerRef.current,
-    });
 
-    const loadRandomImage = async () => {
-      //TODO : edit this part to take into account the whole world
-      const BBOX = [-74.01, 40.7, -73.97, 40.74];
-      const url = `https://graph.mapillary.com/images?fields=id,geometry&bbox=${BBOX.join(
+
+
+    const containerRef = useRef(null);
+    const accessToken = "yMLY | 24042449852006793 | 41 fe7cda19d102ad08dcac22d1fb2ef6 ";
+
+    useEffect(() => {
+        if (!containerRef.current) return;
+
+        const viewer = new Viewer({
+            accessToken,
+            container: containerRef.current,
+            cover: false,
+            component: {
+                cover: false,
+            },
+
+        });
+
+
+        const loadRandomImage = async() => {
+            //TODO : edit this part to take into account the whole world
+            const BBOX = [-74.01, 40.7, -73.97, 40.74];
+            const url = `https://graph.mapillary.com/images?fields=id,geometry&bbox=${BBOX.join(
         ","
       )}&limit=20`;
 
-      try {
-        const response = await fetch(url, {
-          headers: { Authorization: `OAuth ${accessToken}` },
-        });
-        const data = await response.json();
+            try {
+                const response = await fetch(url, {
+                    headers: { Authorization: `OAuth ${accessToken}` },
+                });
+                const data = await response.json();
 
-        if (!data.data.length) {
-          console.warn("No images found.");
-          return;
+                if (!data.data.length) {
+                    console.warn("No images found.");
+                    return;
+                }
+
+                const randomImage =
+                    data.data[Math.floor(Math.random() * data.data.length)];
+
+                viewer.moveTo(randomImage.id).then(() => {
+                    //TODO: declare these variables outside the try-catch block to send the coordinates from Games to score routes
+                    const [lng, lat] = randomImage.geometry.coordinates;
+                    console.log(`${lat}, ${lng}`);
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        };
+
+        //TODO: try to find a way to start timer element when the image has already loaded
+        loadRandomImage();
+
+        return () => viewer.remove();
+    }, [accessToken]);
+
+    return ( <
+        div ref = { containerRef }
+        style = {
+            {
+                width: "100%",
+                height: "100%",
+            }
         }
-
-        const randomImage =
-          data.data[Math.floor(Math.random() * data.data.length)];
-
-        viewer.moveTo(randomImage.id).then(() => {
-          //TODO: declare these variables outside the try-catch block to send the coordinates from Games to score routes
-          const [lng, lat] = randomImage.geometry.coordinates;
-          console.log(`${lat}, ${lng}`);
-        });
-      } catch (e) {
-        console.error(e);
-      }
-    };
-
-    //TODO: try to find a way to start timer element when the image has already loaded
-    loadRandomImage();
-
-    return () => viewer.remove();
-  }, [accessToken]);
-
-  return (
-    <div
-      ref={containerRef}
-      style={{
-        width: "100%",
-        height: "100%",
-      }}
-    />
-  );
+        />
+    );
 };
 
 export default View;
