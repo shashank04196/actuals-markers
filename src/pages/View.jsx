@@ -1,22 +1,13 @@
 import { useEffect, useRef } from "react";
 import { Viewer } from "mapillary-js";
 
-const View = () => {
-    /* TODO:create a .env file in the root project directory
-     add the name of the file in the .gitignore (as soon the save the gitignore file after adding name the filename in the file panel becomes dim)
-     add the key as VITE_MAPPILLARY_TOKEN = "access_token" (client_token) in mappillary user profile
-     */
-
-
-
-
-
+const View = ({ setTrueCoords, setImageLoaded }) => {
     const containerRef = useRef(null);
     const accessToken =
         import.meta.env.VITE_MAPILLARY_TOKEN;
 
     useEffect(() => {
-        if (!containerRef.current) return;
+        if (!containerRef.current || !accessToken) return;
 
         const viewer = new Viewer({
             accessToken,
@@ -24,47 +15,66 @@ const View = () => {
             cover: false,
             component: {
                 cover: false,
-            },
+                direction: true,
+                image: true,
+                sequence: true,
+                navigation: true,
 
-        });
-
-
-        const loadRandomImage = async() => {
-            //TODO : edit this part to take into account the whole world
-            const BBOX = [-74.01, 40.7, -73.97, 40.74];
-            const url = `https://graph.mapillary.com/images?fields=id,geometry&bbox=${BBOX.join(
-        ","
-      )}&limit=20`;
-
-            try {
-                const response = await fetch(url, {
-                    headers: { Authorization: `OAuth ${accessToken}` },
-                });
-                const data = await response.json();
-
-                if (!data.data.length) {
-                    console.warn("No images found.");
-                    return;
-                }
-
-                const randomImage =
-                    data.data[Math.floor(Math.random() * data.data.length)];
-
-                viewer.moveTo(randomImage.id).then(() => {
-                    //TODO: declare these variables outside the try-catch block to send the coordinates from Games to score routes
-                    const [lng, lat] = randomImage.geometry.coordinates;
-                    console.log(`${lat}, ${lng}`);
-                });
-            } catch (e) {
-                console.error(e);
             }
+        });
+        const getRandomCoords = () => {
+            const lat = Math.random() * 140 - 70;
+            const lng = Math.random() * 360 - 180;
+            return [lat, lng];
         };
 
-        //TODO: try to find a way to start timer element when the image has already loaded
+
+
+        const loadRandomImage = async(maxAttempts = 10) => {
+            let attempts = 0;
+
+            while (attempts < maxAttempts) {
+                const [lat, lng] = getRandomCoords();
+                const buffer = 0.05;
+                const bbox = [lng - buffer, lat - buffer, lng + buffer, lat + buffer];
+                const url = `https://graph.mapillary.com/images?fields=id,geometry,sequence&bbox=${bbox.join(",")}&limit=10`;
+
+
+                try {
+                    const response = await fetch(url, {
+                        headers: { Authorization: `OAuth ${accessToken}` },
+                    });
+                    const data = await response.json();
+                    const sequenceImages = data.data.filter(img => img.sequence && img.sequence.id);
+                    if (!sequenceImages.length) {
+                        console.warn("No images found. Retrying...");
+                        attempts++;
+                        continue;
+                    }
+
+                    const randomImage =
+                        sequenceImages[Math.floor(Math.random() * sequenceImages.length)];
+
+                    await viewer.moveTo(randomImage.id);
+                    const [lng, lat] = randomImage.geometry.coordinates;
+                    console.log(`True Location: ${lat}, ${lng}`);
+                    setTrueCoords({ lat, lng });
+                    setImageLoaded(true);
+                    return; // ✅ Let Game.jsx start timer
+
+                } catch (e) {
+                    console.error(e);
+                    attempts++;
+                }
+            }
+
+
+        };
+
         loadRandomImage();
 
         return () => viewer.remove();
-    }, [accessToken]);
+    }, [accessToken, setTrueCoords, setImageLoaded]);
 
     return ( <
         div ref = { containerRef }
@@ -72,6 +82,9 @@ const View = () => {
             {
                 width: "100%",
                 height: "100%",
+                position: "absolute",
+                top: 0,
+                left: 0,
             }
         }
         />

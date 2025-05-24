@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./Timer.css";
 
 function Timer({ guessCoords } = {}) {
-    const [seconds, setSeconds] = useState(10);
+    const [seconds, setSeconds] = useState(60);
     const [submitted, setSubmitted] = useState(false);
     const navigate = useNavigate();
 
