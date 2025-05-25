@@ -57,16 +57,30 @@ Open your browser at http://localhost:5173 (the port your dev server uses)
  - 
 ## Folder Structure
 src/
-├── components/
-│   ├── Game.jsx
-│   ├── Home.jsx
-│   ├── Map.jsx
-│   ├── Score.jsx
-│   ├── Timer.jsx
-│   └── View.jsx
-├── css/
-│   └── *.css
-└── App.jsx
-|
+|-- pages/
+|   |--jsx/
+│     |-- Game.jsx
+│     |-- Home.jsx
+│     |-- Map.jsx
+│     |-- Score.jsx
+│     |-- Timer.jsx
+│     |-- View.jsx
+|     |-- MapScore.jsx
+|--|--css/
+|     |--Game.css
+|     |--Home.css
+|     |--Score.css
+|     |--Timer.css
+│    
+|--App.jsx
+|--App.css
+|--Index.css
+|--main.jsx
 
 
+## Contributing
+Feel free to open issues or submit pull requests if you'd like to improve the game!
+
+## Acknowledgements
+ - Mapillary for providing the street imagery API
+ - Leaflet for the mapping library
