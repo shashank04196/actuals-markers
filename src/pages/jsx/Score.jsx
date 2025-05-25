@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import "./Score.css";
+import "../css/Score.css";
 import MapScore from "./MapScore";
+import Game from "./Game";
+import View from "./View";
 
 function Score() {
     const location = useLocation();
     const navigate = useNavigate();
-    const { guessCoords } = location.state || {};
+    const { guessCoords, trueCoords } = location.state || {};
 
     const [defaultLocation, setDefaultLocation] = useState(null);
     const [distance, setDistance] = useState(null);
     const [score, setScore] = useState(null);
 
     // Function to generate random coordinates
-    const generateRandomLocation = () => {
+    const generatetrueCoords = () => {
         // Random lat between -60 and 75 (avoiding extreme poles)
         const lat = Math.random() * 135 - 60;
         // Random lng between -180 and 180
@@ -46,29 +48,28 @@ function Score() {
 
     // Generate random location and calculate distance/score
     useEffect(() => {
-        if (!guessCoords) return;
-
-        const randomLocation = generateRandomLocation();
-        setDefaultLocation(randomLocation);
+        if (!guessCoords || !trueCoords) return;
 
         const calculatedDistance = calculateDistance(
             guessCoords.lat,
             guessCoords.lng,
-            randomLocation.lat,
-            randomLocation.lng
+            trueCoords.lat,
+            trueCoords.lng
         );
         setDistance(calculatedDistance);
         setScore(calculateScore(calculatedDistance));
-    }, [guessCoords]);
+    }, [guessCoords, trueCoords]);
 
-    if (!guessCoords) {
+    if (!guessCoords || !trueCoords) {
         return ( <
             div className = "dashboard-container" >
             <
             div className = "top-row" >
             <
             div className = "box" > No location selected! < /div> <
-            div className = "box" > Score: 0 < /div> < /
+            div className = "box" > Score: {
+                0
+            } < /div> < /
             div > <
             /div>
         );
@@ -82,27 +83,45 @@ function Score() {
         div className = "box" >
         <
         MapScore guessCoords = { guessCoords }
-        defaultLocation = { defaultLocation }
+        defaultLocation = { trueCoords }
         /> < /
         div > <
         div className = "box" >
         <
         div className = "score-details" >
         <
-        h2 > Your Score < /h2> <
-        h3 > { score ? Math.round(score) : "Calculating..." } < /h3> <
+        h2 style = {
+            { fontSize: "2rem", color: "#4CAF50", marginBottom: "10px" }
+        } > Your Score <
+        /h2> <
+        h3 style = {
+            {
+                fontSize: "3rem",
+                background: "linear-gradient(to right, #ff512f, #dd2476)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                fontWeight: "bold"
+            }
+        } > { score ? Math.round(score) : "Calculating..." } <
+        /h3>
+
+        <
         div className = "detail-item" >
         <
         span className = "detail-label" > Your guess: < /span> <
         span className = "detail-value" > { guessCoords.lat.toFixed(5) }°, { guessCoords.lng.toFixed(5) }° <
         /span> < /
-        div > <
+        div >
+
+        <
         div className = "detail-item" >
         <
         span className = "detail-label" > Target location: < /span> <
-        span className = "detail-value" > { defaultLocation ? `${defaultLocation.lat.toFixed(5)}°, ${defaultLocation.lng.toFixed(5)}°` : "Generating..." } <
+        span className = "detail-value" > { trueCoords.lat.toFixed(5) }°, { trueCoords.lng.toFixed(5) }° <
         /span> < /
-        div > <
+        div >
+
+        <
         div className = "detail-item" >
         <
         span className = "detail-label" > Distance: < /span> <

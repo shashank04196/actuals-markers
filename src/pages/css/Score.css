@@ -28,3 +28,23 @@
     color: #333;
     background-color: #fff;
 }
+
+.score-details {
+    padding: 20px;
+    text-align: center;
+}
+
+.detail-item {
+    margin-top: 10px;
+    font-size: 1rem;
+}
+
+.detail-label {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.detail-value {
+    font-family: monospace;
+    color: #333;
+}

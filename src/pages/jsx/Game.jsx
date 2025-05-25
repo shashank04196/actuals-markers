@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Game.css";
+import "../css/Game.css";
 import Map from "./Map";
 import Timer from "./Timer";
 import View from "./View";
@@ -15,22 +15,26 @@ function Game() {
         style = {
             { position: "relative" }
         } >
+
         <
         View setTrueCoords = {
             setTrueCoords
         }
         setImageLoaded = { setImageLoaded }
         / >{!imageLoaded && ( <
-        div className = "loading-overlay" >
-        Loading street view... <
-        /div>
+        div className = "loader" >
+        <
+        span className = "loader-text" > Loading... < /span> <
+        span className = "load" > < /span>  < /
+        div >
     )
-} <
-/
+} < /
 div > <
     div className = "timer" >
     <
     Timer guessCoords = { guessCoords }
+defaultCoords = { trueCoords }
+imageLoaded = { imageLoaded }
 /> < /
 div > <
     div className = "leaflet" >

@@ -1,13 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Timer.css";
+import "../css/Timer.css";
+import Game from "./Game";
+import View from "./View";
+import score from "./Score";
 
-function Timer({ guessCoords } = {}) {
+
+function Timer({ guessCoords, defaultCoords, imageLoaded } = {}) {
     const [seconds, setSeconds] = useState(60);
     const [submitted, setSubmitted] = useState(false);
     const navigate = useNavigate();
+    const [timerActive, setTimerActive] = useState(false);
+    useEffect(() => {
+        if (imageLoaded && !timerActive) {
+            setTimerActive(true);
+        }
+    }, [imageLoaded]);
 
     useEffect(() => {
+        if (!timerActive) return;
+
         if (submitted) return;
         if (seconds === 0) {
             handleSubmit();
@@ -39,6 +51,7 @@ function Timer({ guessCoords } = {}) {
             navigate("/Score", {
                 state: {
                     guessCoords: guessCoords || null,
+                    trueCoords: defaultCoords || null,
 
                 },
             });
